@@ -69,7 +69,6 @@ exports.datVe = async (req, res) => {
     if (!lichChieu) {
       return res.status(404).json({ message: "Lịch chiếu không tồn tại." });
     }
-    // console.log("lich chieu", lichChieu);
 
     const updateOps = danhSachVe.map((ve) => ({
       updateOne: {

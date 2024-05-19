@@ -1,6 +1,7 @@
 var lichChieuTheoPhimSchema = require("../schema/lichChieuTheoPhim.schema");
 var detailFilm = require("../schema/DetailPhim.schema");
 const maPhimMaLichChieuSchema = require("../schema/maPhim_maLichChieu.schema");
+var phongVeSchema = require("../schema/phongve.schema");
 
 const moment = require("moment");
 
@@ -135,6 +136,67 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
 
     phimInDanhSachPhim.lstLichChieuTheoPhim.push(newLichChieuPhim);
     await lichChieuTheoPhimRecord.save();
+
+    // Thêm phòng vé
+    let maGheRecord = await maPhimMaLichChieuSchema.findOne();
+
+    if (!maGheRecord) {
+      return res.status(404).send("maGhe record not found");
+    }
+    const newMaGhe = maGheRecord.maGhe + 1;
+    const danhSachGhe = [];
+    // Define VIP seat ranges
+    const vipSeatRanges = [
+      [35, 46],
+      [51, 62],
+      [67, 78],
+      [83, 94],
+      [99, 110],
+      [115, 126],
+    ];
+
+    for (let i = 1; i <= 160; i++) {
+      let loaiGhe = "Thuong";
+      let giaGhe = giaVe;
+
+      // Check if the current seat falls within any VIP range
+      for (const range of vipSeatRanges) {
+        if (i >= range[0] && i <= range[1]) {
+          loaiGhe = "Vip";
+          giaGhe = giaVe + 20000;
+          break;
+        }
+      }
+
+      danhSachGhe.push({
+        maGhe: newMaGhe + i,
+        tenGhe: i.toString().padStart(2, "0"),
+
+        loaiGhe: loaiGhe,
+        stt: i.toString().padStart(2, "0"),
+        giaVe: giaGhe,
+        daDat: false,
+        taiKhoanNguoiDat: null,
+      });
+    }
+
+    const thongTinPhim = {
+      maLichChieu: newMaLichChieu,
+      tenCumRap: cumRap.tenCumRap,
+      tenRap: cumRap.tenRap,
+      diaChi: cumRap.diaChi,
+      tenPhim: detailFilmRecord.tenPhim,
+      hinhAnh: detailFilmRecord.hinhAnh,
+      ngayChieu: moment(ngayChieuGioChieu, "DD/MM/YYYY").format("DD/MM/YYYY"),
+      gioChieu: moment(ngayChieuGioChieu, "HH:mm:ss").format("HH:mm"),
+    };
+
+    const newPhongVe = new phongVeSchema({
+      thongTinPhim: thongTinPhim,
+      danhSachGhe: danhSachGhe,
+    });
+
+    await newPhongVe.save();
 
     res.status(201).json({
       message: "Lịch chiếu phim đã được thêm thành công",

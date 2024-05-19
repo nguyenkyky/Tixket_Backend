@@ -9,6 +9,9 @@ var dataSchema = new Schema({
   maLichChieu: {
     type: Number,
   },
+  maGhe: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model(
