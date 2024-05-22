@@ -236,3 +236,70 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
     res.status(500).send("ERROR 500:" + e.message);
   }
 };
+
+exports.xoaLichChieuPhim = async (req, res) => {
+  try {
+    const { maLichChieu } = req.query;
+
+    if (!maLichChieu) {
+      return res.status(400).send("maLichChieu is required");
+    }
+
+    const maLichChieuInt = parseInt(maLichChieu);
+
+    // Xóa lịch chiếu trong detailFilm
+    const detailFilmRecord = await detailFilm.findOne({
+      "heThongRapChieu.cumRapChieu.lichChieuPhim.maLichChieu": maLichChieuInt,
+    });
+
+    if (!detailFilmRecord) {
+      return res.status(404).send("Detail film record not found");
+    }
+
+    detailFilmRecord.heThongRapChieu.forEach((heThongRap) => {
+      heThongRap.cumRapChieu.forEach((cumRap) => {
+        cumRap.lichChieuPhim = cumRap.lichChieuPhim.filter(
+          (lichChieu) => lichChieu.maLichChieu !== maLichChieuInt
+        );
+      });
+    });
+
+    await detailFilmRecord.save();
+
+    // Xóa lịch chiếu trong lichChieuTheoPhimSchema
+    const lichChieuTheoPhimRecord = await lichChieuTheoPhimSchema.findOne({
+      "cumRapChieu.danhSachPhim.lstLichChieuTheoPhim.maLichChieu":
+        maLichChieuInt,
+    });
+
+    if (!lichChieuTheoPhimRecord) {
+      return res.status(404).send("lichChieuTheoPhim record not found");
+    }
+
+    lichChieuTheoPhimRecord.cumRapChieu.forEach((cumRap) => {
+      cumRap.danhSachPhim.forEach((phim) => {
+        phim.lstLichChieuTheoPhim = phim.lstLichChieuTheoPhim.filter(
+          (lichChieu) => lichChieu.maLichChieu !== maLichChieuInt
+        );
+      });
+    });
+
+    await lichChieuTheoPhimRecord.save();
+
+    // Xóa phòng vé
+    const result = await phongVeSchema.deleteOne({
+      "thongTinPhim.maLichChieu": maLichChieuInt,
+    });
+
+    if (result.deletedCount === 0) {
+      return res.status(404).send("Phòng vé not found");
+    }
+
+    res.status(200).json({
+      message: "Lịch chiếu phim đã được xóa thành công",
+      maLichChieu: maLichChieuInt,
+    });
+  } catch (e) {
+    res.status(500).send("ERROR 500:" + e.message);
+  }
+};
