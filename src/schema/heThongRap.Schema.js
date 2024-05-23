@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-var collectionName = "heThongRap";
 const Schema = mongoose.Schema;
 
-// Schema for CumRap
+const collectionName = "heThongRap";
+
+// Schema cho CumRap
 const cumRapSchema = new Schema({
   maCumRap: String,
   tenCumRap: String,
@@ -11,7 +12,7 @@ const cumRapSchema = new Schema({
   diaChi: String,
 });
 
-// Main schema for the collection
+// Schema chính cho collection
 const dataSchema = new Schema({
   cumRapChieu: [cumRapSchema],
   maHeThongRap: String,
@@ -19,4 +20,7 @@ const dataSchema = new Schema({
   logo: String,
 });
 
-module.exports = mongoose.model("heThongRap", dataSchema, collectionName);
+// Kiểm tra nếu model đã tồn tại trước khi định nghĩa nó
+module.exports =
+  mongoose.models.heThongRap ||
+  mongoose.model("heThongRap", dataSchema, collectionName);

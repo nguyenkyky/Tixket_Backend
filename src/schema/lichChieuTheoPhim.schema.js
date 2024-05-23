@@ -38,7 +38,6 @@ const dataSchema = new Schema({
   maHeThongRap: String,
   tenHeThongRap: String,
   logo: String,
-  mahom: String,
 });
 
 module.exports = mongoose.model(
