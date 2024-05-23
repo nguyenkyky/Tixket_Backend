@@ -12,6 +12,9 @@ var dataSchema = new Schema({
   maGhe: {
     type: Number,
   },
+  maBanner: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model(
