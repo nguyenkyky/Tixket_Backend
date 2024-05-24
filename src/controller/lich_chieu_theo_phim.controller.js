@@ -101,6 +101,11 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
       ngayChieuGioChieu,
       giaVe,
       thoiLuong,
+      tenPhim,
+      hinhAnh,
+      hot,
+      sapChieu,
+      dangChieu,
     } = req.body;
 
     const isoNgayChieuGioChieu = moment(
@@ -161,12 +166,24 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
     );
 
     if (!phimInDanhSachPhim) {
-      return res.status(404).send("Phim not found in danhSachPhim");
+      // Nếu phim không tồn tại, thêm một phim mới vào danh sách
+      const newPhim = {
+        maPhim: maPhimInt,
+        tenPhim,
+        hinhAnh,
+        hot,
+        dangChieu,
+        sapChieu,
+        lstLichChieuTheoPhim: [newLichChieuPhim],
+      };
+      cumRapInLichChieuTheoPhim.danhSachPhim.push(newPhim);
     }
 
-    phimInDanhSachPhim.lstLichChieuTheoPhim.push(newLichChieuPhim);
-    await lichChieuTheoPhimRecord.save();
+    if (phimInDanhSachPhim) {
+      phimInDanhSachPhim.lstLichChieuTheoPhim.push(newLichChieuPhim);
+    }
 
+    await lichChieuTheoPhimRecord.save();
     // Thêm phòng vé
     let maGheRecord = await maPhimMaLichChieuSchema.findOne();
 
