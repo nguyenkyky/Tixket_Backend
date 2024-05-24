@@ -174,6 +174,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
         hot,
         dangChieu,
         sapChieu,
+        thoiLuong,
         lstLichChieuTheoPhim: [newLichChieuPhim],
       };
       cumRapInLichChieuTheoPhim.danhSachPhim.push(newPhim);

@@ -50,6 +50,7 @@ exports.savePhim = async (req, res) => {
       hot,
       dangChieu,
       sapChieu,
+      thoiLuong,
     };
 
     const newPhim = new phimSchema({
@@ -192,6 +193,7 @@ exports.capNhatPhim = async (req, res) => {
             phim.hot = hot;
             phim.dangChieu = dangChieu;
             phim.sapChieu = sapChieu;
+            phim.thoiLuong = thoiLuong;
           }
         }
       }
