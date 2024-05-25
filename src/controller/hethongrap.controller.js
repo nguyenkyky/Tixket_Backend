@@ -96,8 +96,15 @@ exports.editHeThongRap = async (req, res) => {
 
 exports.editCumRap = async (req, res) => {
   try {
-    const { maHeThongRap, maCumRap, newMaCumRap, tenCumRap, diaChi, hinhAnh } =
-      req.body;
+    const {
+      maHeThongRap,
+      maCumRap,
+      newMaCumRap,
+      tenCumRap,
+      diaChi,
+      hinhAnh,
+      khuVuc,
+    } = req.body;
 
     // Tìm và cập nhật thông tin trong heThongRapSchema
     const heThongRap = await heThongRapSchema.findOne({ maHeThongRap });
@@ -117,6 +124,7 @@ exports.editCumRap = async (req, res) => {
       tenCumRap,
       diaChi,
       hinhAnh,
+      khuVuc,
     };
 
     await heThongRap.save();
@@ -130,6 +138,7 @@ exports.editCumRap = async (req, res) => {
           "cumRapChieu.$.tenCumRap": tenCumRap,
           "cumRapChieu.$.diaChi": diaChi,
           "cumRapChieu.$.hinhAnh": hinhAnh,
+          "cumRapChieu.$.khuVuc": khuVuc,
         },
       }
     );
@@ -148,6 +157,7 @@ exports.editCumRap = async (req, res) => {
             cumRap.tenCumRap = tenCumRap;
             cumRap.diaChi = diaChi;
             cumRap.hinhAnh = hinhAnh;
+            cumRap.khuVuc = khuVuc;
           }
         }
       }
@@ -243,7 +253,8 @@ exports.deleteHeThongRap = async (req, res) => {
 
 exports.addCumRap = async (req, res) => {
   try {
-    const { maHeThongRap, tenCumRap, maCumRap, diaChi, hinhAnh } = req.body;
+    const { maHeThongRap, tenCumRap, maCumRap, diaChi, hinhAnh, khuVuc } =
+      req.body;
 
     // Tạo mới cụm rạp
     const newCumRap = {
@@ -251,6 +262,7 @@ exports.addCumRap = async (req, res) => {
       tenCumRap,
       diaChi,
       hinhAnh,
+      khuVuc,
     };
 
     // Tìm hệ thống rạp và thêm cụm rạp mới vào trong heThongRapSchema

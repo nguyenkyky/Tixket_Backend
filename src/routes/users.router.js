@@ -8,4 +8,6 @@ router.get("/all", User.danhSachNguoiDung);
 router.get("/find", User.find);
 router.delete("/delete", User.delete);
 router.post("/update", User.update);
+router.post("/doiMatKhau", User.changePassword);
+
 module.exports = router;

@@ -86,7 +86,7 @@ exports.find = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  const { hoTen, email, soDT, avatar, taiKhoan } = req.body;
+  const { hoTen, email, soDT, avatar, taiKhoan, newTaiKhoan } = req.body;
 
   try {
     // Find the user
@@ -96,11 +96,20 @@ exports.update = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // Check if newTaiKhoan already exists, but ignore if it's the same as the current taiKhoan
+    if (newTaiKhoan !== taiKhoan) {
+      const existingUser = await User.findOne({ taiKhoan: newTaiKhoan });
+      if (existingUser) {
+        return res.status(400).json({ message: "New username already exists" });
+      }
+    }
+
     // Update the user
     user.hoTen = hoTen;
     user.email = email;
     user.soDT = soDT;
     user.avatar = avatar;
+    user.taiKhoan = newTaiKhoan;
 
     // Save the updated user
     const updatedUser = await user.save();
@@ -127,5 +136,34 @@ exports.delete = async (req, res) => {
     res.status(200).json({ message: "Xóa thành công", user: userDelete });
   } catch (e) {
     res.status(500).send("ERROR 500:" + e.message);
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  const { taiKhoan, currentPassword, newPassword } = req.body;
+
+  try {
+    // Tìm người dùng dựa trên tài khoản
+    const user = await User.findOne({ taiKhoan });
+
+    // Kiểm tra xem người dùng có tồn tại hay không
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Kiểm tra xem mật khẩu hiện tại có đúng hay không
+    if (user.matKhau !== currentPassword) {
+      return res.status(400).json({ message: "Invalid current password" });
+    }
+
+    // Cập nhật mật khẩu mới
+    user.matKhau = newPassword;
+
+    // Lưu thay đổi
+    await user.save();
+
+    res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
   }
 };

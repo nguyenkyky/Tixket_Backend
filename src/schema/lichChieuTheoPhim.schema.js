@@ -31,6 +31,7 @@ const cumRapSchema = new Schema({
   tenCumRap: String,
   hinhAnh: String,
   diaChi: String,
+  khuVuc: String,
 });
 
 // Main schema for the collection

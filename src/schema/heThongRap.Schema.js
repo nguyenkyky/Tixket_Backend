@@ -10,6 +10,7 @@ const cumRapSchema = new Schema({
   tenCumRap: String,
   hinhAnh: String,
   diaChi: String,
+  khuVuc: String,
 });
 
 // Schema chính cho collection

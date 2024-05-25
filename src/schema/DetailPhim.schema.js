@@ -16,6 +16,7 @@ const cumRapChieuSchema = new Schema({
   tenCumRap: String,
   hinhAnh: String,
   diaChi: String,
+  khuVuc: String,
 });
 
 const heThongRapChieuSchema = new Schema({
