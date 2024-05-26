@@ -245,6 +245,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
     });
 
     await newPhongVe.save();
+    await maPhimMaLichChieuSchema.updateOne({}, { maGhe: newMaGhe + 161 });
 
     res.status(201).json({
       message: "Lịch chiếu phim đã được thêm thành công",

@@ -20,6 +20,7 @@ const detailPhim = require("./routes/detailPhim.router");
 const user = require("./routes/users.router");
 const phongve = require("./routes/phongve.router");
 const heThongRap = require("./routes/hethongrap.router");
+const news = require("./routes/tintuc.router");
 
 // var whitelist = properties.CORS;
 // var corsOptions = {
@@ -65,3 +66,4 @@ app.use("/api/details", detailPhim);
 app.use("/api/quanLyNguoiDung", user);
 app.use("/api/phongve", phongve);
 app.use("/api/hethongrap", heThongRap);
+app.use("/api/news", news);

@@ -15,6 +15,9 @@ var dataSchema = new Schema({
   maBanner: {
     type: Number,
   },
+  maTinTuc: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model(
