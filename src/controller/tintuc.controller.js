@@ -16,3 +16,12 @@ exports.getData = async (req, res) => {
     res.status(500).send("ERROR 500:" + e.message);
   }
 };
+
+exports.getAll = async (req, res) => {
+  try {
+    const data = await tinTucSchema.find();
+    res.json(data);
+  } catch (e) {
+    res.status(500).send("ERROR 500:" + e.message);
+  }
+};

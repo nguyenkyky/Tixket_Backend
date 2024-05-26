@@ -8,8 +8,17 @@ var dataSchema = new Schema({
   maTinTuc: {
     type: Number,
   },
+  title: {
+    type: String,
+  },
+  hinhAnh: {
+    type: String,
+  },
   render: {
     type: String,
+  },
+  created_at: {
+    type: Date,
   },
 });
 
