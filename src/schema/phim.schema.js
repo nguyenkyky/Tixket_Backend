@@ -21,6 +21,9 @@ var dataSchema = new Schema({
   dienVien: {
     type: Array,
   },
+  theLoai: {
+    type: Array,
+  },
   thoiLuong: {
     type: Number,
   },

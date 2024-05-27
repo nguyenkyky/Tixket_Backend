@@ -6,8 +6,8 @@ var dataSchema = new Schema({
   maBanner: {
     type: Number,
   },
-  maPhim: {
-    type: Number,
+  trailer: {
+    type: String,
   },
   hinhAnh: {
     type: String,

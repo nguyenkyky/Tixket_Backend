@@ -51,15 +51,10 @@ const dataSchema = new Schema({
   },
   soDT: {
     type: String,
-    required: true,
   },
-  maNhom: {
-    type: String,
-    required: true,
-  },
+
   maLoaiNguoiDung: {
     type: String,
-    required: true,
   },
   thongTinDatVe: [ThongTinDatVeSchema],
 });

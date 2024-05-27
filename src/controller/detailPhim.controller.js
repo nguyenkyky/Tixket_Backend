@@ -2,7 +2,7 @@ const Film = require("../schema/DetailPhim.schema");
 
 exports.getFilmDetail = async (req, res) => {
   const { MaPhim } = req.query;
-  console.log(MaPhim);
+  // console.log(MaPhim);
   try {
     const film = await Film.findOne({ maPhim: MaPhim });
 
@@ -24,7 +24,7 @@ exports.saveDetailPhim = async (req, res) => {
       const newDetail = new Film(film);
       await newDetail.save();
       // await dataSchema.create(data);
-      console.log(film);
+      // console.log(film);
       res.status(200).json({ film });
     }
   } catch (e) {

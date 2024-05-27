@@ -16,6 +16,7 @@ const cumRapChieuSchema = new Schema({
   tenCumRap: String,
   hinhAnh: String,
   diaChi: String,
+  khuVuc: String,
 });
 
 const heThongRapChieuSchema = new Schema({
@@ -33,7 +34,7 @@ const dataSchema = new Schema({
   dienVien: Array,
   daoDien: String,
   thoiLuong: Number,
-
+  theLoai: Array,
   trailer: String,
   hinhAnh: String,
   moTa: String,

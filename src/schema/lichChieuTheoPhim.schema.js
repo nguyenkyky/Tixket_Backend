@@ -21,6 +21,8 @@ const danhSachPhimSchema = new Schema({
   hot: Boolean,
   dangChieu: Boolean,
   sapChieu: Boolean,
+  thoiLuong: Number,
+  theLoai: Array,
 });
 
 // Schema for CumRap
@@ -30,6 +32,7 @@ const cumRapSchema = new Schema({
   tenCumRap: String,
   hinhAnh: String,
   diaChi: String,
+  khuVuc: String,
 });
 
 // Main schema for the collection
@@ -38,7 +41,6 @@ const dataSchema = new Schema({
   maHeThongRap: String,
   tenHeThongRap: String,
   logo: String,
-  mahom: String,
 });
 
 module.exports = mongoose.model(

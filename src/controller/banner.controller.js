@@ -13,16 +13,19 @@ exports.getData = async (req, res) => {
 
 exports.saveBanner = async (req, res) => {
   try {
-    const banner = req.body;
-    // console.log(req.body);
-    if (banner) {
-      const newBanner = new bannerSchema(banner);
-      await newBanner.save();
-      // await dataSchema.create(data);
-      // console.log(banner);
-      res.status(200).json({ banner });
-    }
+    const banners = req.body;
+
+    // Xóa toàn bộ dữ liệu hiện có trong bannerSchema
+    await bannerSchema.deleteMany({});
+
+    // Thêm dữ liệu mới từ mảng banners
+    await bannerSchema.insertMany(banners);
+
+    return res
+      .status(201)
+      .json({ message: "Cập nhật dữ liệu thành công", data: banners });
   } catch (e) {
+    // Handle errors
     res.status(500).send("ERROR 500:" + e.message);
   }
 };

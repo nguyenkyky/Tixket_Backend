@@ -40,6 +40,7 @@ exports.savePhim = async (req, res) => {
       tenPhim,
       thoiLuong,
       trailer,
+      theLoai,
     } = req.body;
 
     const danhSachPhimEntry = {
@@ -50,6 +51,8 @@ exports.savePhim = async (req, res) => {
       hot,
       dangChieu,
       sapChieu,
+      thoiLuong,
+      theLoai,
     };
 
     const newPhim = new phimSchema({
@@ -66,6 +69,7 @@ exports.savePhim = async (req, res) => {
       tenPhim,
       thoiLuong,
       trailer,
+      theLoai,
     });
 
     const newDetailPhim = new detailPhimSchema({
@@ -83,6 +87,7 @@ exports.savePhim = async (req, res) => {
       tenPhim,
       thoiLuong,
       trailer,
+      theLoai,
     });
 
     await newPhim.save();
@@ -135,6 +140,7 @@ exports.capNhatPhim = async (req, res) => {
       tenPhim,
       thoiLuong,
       trailer,
+      theLoai,
     } = req.body;
 
     // Convert ngayKhoiChieu from "DD/MM/YYYY" to "YYYY-MM-DD"
@@ -156,6 +162,7 @@ exports.capNhatPhim = async (req, res) => {
           tenPhim,
           thoiLuong,
           trailer,
+          theLoai,
         },
       },
       { new: true }
@@ -176,6 +183,7 @@ exports.capNhatPhim = async (req, res) => {
           tenPhim,
           thoiLuong,
           trailer,
+          theLoai,
         },
       },
       { new: true }
@@ -192,6 +200,8 @@ exports.capNhatPhim = async (req, res) => {
             phim.hot = hot;
             phim.dangChieu = dangChieu;
             phim.sapChieu = sapChieu;
+            phim.thoiLuong = thoiLuong;
+            phim.theLoai = theLoai;
           }
         }
       }
