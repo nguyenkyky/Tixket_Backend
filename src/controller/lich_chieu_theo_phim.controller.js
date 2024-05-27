@@ -15,6 +15,40 @@ exports.getData = async (req, res) => {
   }
 };
 
+exports.getAllShowtimes = async (req, res) => {
+  try {
+    // Lấy tất cả các bản ghi từ lichChieuTheoPhimSchema
+    const allData = await lichChieuTheoPhimSchema.find();
+
+    // Mảng để chứa tất cả các lịch chiếu
+    const allShowtimes = [];
+
+    // Duyệt qua từng bản ghi
+    allData.forEach((heThongRap) => {
+      heThongRap.cumRapChieu.forEach((cumRap) => {
+        cumRap.danhSachPhim.forEach((phim) => {
+          phim.lstLichChieuTheoPhim.forEach((lichChieu) => {
+            // Gộp tất cả các bản ghi trong lstLichChieuTheoPhim vào mảng
+            allShowtimes.push({
+              ...lichChieu._doc, // Lấy toàn bộ thông tin của lịch chiếu
+              tenHeThongRap: heThongRap.tenHeThongRap, // Thêm thông tin tên hệ thống rạp
+              tenCumRap: cumRap.tenCumRap, // Thêm thông tin tên cụm rạp
+              tenPhim: phim.tenPhim, // Thêm thông tin tên phim
+              maPhim: phim.maPhim, // Thêm thông tin mã phim
+            });
+          });
+        });
+      });
+    });
+
+    // Trả về mảng tất cả các lịch chiếu
+    return res.status(200).json({ data: allShowtimes });
+  } catch (e) {
+    // Xử lý lỗi
+    res.status(500).send("ERROR 500:" + e.message);
+  }
+};
+
 exports.getAllHeThongRap = async (req, res) => {
   try {
     // Use .find() with a projection to exclude the lstCumRap field
@@ -109,7 +143,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
       theLoai,
     } = req.body;
 
-    console.log("ngay chieu gio chieu", ngayChieuGioChieu);
+    // console.log("ngay chieu gio chieu", ngayChieuGioChieu);
 
     // const isoNgayChieuGioChieu = moment(
     //   ngayChieuGioChieu,
