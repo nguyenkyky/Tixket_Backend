@@ -44,7 +44,6 @@ const dataSchema = new Schema({
   },
   email: {
     type: String,
-    required: true,
   },
   avatar: {
     type: String,
@@ -52,7 +51,6 @@ const dataSchema = new Schema({
   soDT: {
     type: String,
   },
-
   maLoaiNguoiDung: {
     type: String,
   },

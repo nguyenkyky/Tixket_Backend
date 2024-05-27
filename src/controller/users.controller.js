@@ -33,6 +33,44 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.register = async (req, res) => {
+  const { username, hoTen, matKhau, xacNhanMatKhau } = req.body;
+
+  try {
+    // Kiểm tra xem username đã tồn tại chưa
+    const existingUser = await User.findOne({ taiKhoan: username });
+    if (existingUser) {
+      return res.status(402).json({ message: "Username already exists" });
+    }
+
+    // Kiểm tra xem mật khẩu có khớp với xác nhận mật khẩu không
+    if (matKhau !== xacNhanMatKhau) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    // Tạo mới user với thông tin mặc định
+    const newUser = new User({
+      taiKhoan: username,
+      hoTen: hoTen,
+      matKhau: matKhau,
+      email: "",
+      soDT: "",
+      avatar:
+        "https://cdn-media.sforum.vn/storage/app/media/wp-content/uploads/2024/02/avatar-anh-meo-cute-1.jpg",
+      maLoaiNguoiDung: "KhachHang",
+    });
+
+    // Lưu user mới vào cơ sở dữ liệu
+    const savedUser = await newUser.save();
+
+    res
+      .status(201)
+      .json({ message: "User registered successfully", user: savedUser });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
 exports.danhSachNguoiDung = async (req, res) => {
   try {
     const users = await User.find();
