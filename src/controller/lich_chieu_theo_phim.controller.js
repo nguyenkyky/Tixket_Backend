@@ -2,7 +2,7 @@ var lichChieuTheoPhimSchema = require("../schema/lichChieuTheoPhim.schema");
 var detailFilm = require("../schema/DetailPhim.schema");
 const maPhimMaLichChieuSchema = require("../schema/maPhim_maLichChieu.schema");
 var phongVeSchema = require("../schema/phongve.schema");
-
+const dayjs = require("dayjs");
 const moment = require("moment");
 
 exports.getData = async (req, res) => {
@@ -106,12 +106,18 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
       hot,
       sapChieu,
       dangChieu,
+      theLoai,
     } = req.body;
 
-    const isoNgayChieuGioChieu = moment(
-      ngayChieuGioChieu,
-      "DD/MM/YYYY HH:mm:ss"
-    ).toISOString();
+    console.log("ngay chieu gio chieu", ngayChieuGioChieu);
+
+    // const isoNgayChieuGioChieu = moment(
+    //   ngayChieuGioChieu,
+    //   "DD/MM/YYYY HH:mm:ss"
+    // ).toISOString();
+
+    const isoNgayChieuGioChieu = dayjs(ngayChieuGioChieu);
+
     const detailFilmRecord = await detailFilm.findOne({ maPhim: maPhim });
 
     if (!detailFilmRecord) {
@@ -136,7 +142,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
 
     const newLichChieuPhim = {
       maLichChieu: newMaLichChieu,
-      ngayChieuGioChieu: isoNgayChieuGioChieu,
+      ngayChieuGioChieu: ngayChieuGioChieu,
       giaVe,
       thoiLuong,
     };
@@ -175,6 +181,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
         dangChieu,
         sapChieu,
         thoiLuong,
+        theLoai,
         lstLichChieuTheoPhim: [newLichChieuPhim],
       };
       cumRapInLichChieuTheoPhim.danhSachPhim.push(newPhim);
@@ -235,8 +242,8 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
       diaChi: cumRap.diaChi,
       tenPhim: detailFilmRecord.tenPhim,
       hinhAnh: detailFilmRecord.hinhAnh,
-      ngayChieu: moment(ngayChieuGioChieu, "DD/MM/YYYY").format("DD/MM/YYYY"),
-      gioChieu: moment(ngayChieuGioChieu, "HH:mm:ss").format("HH:mm"),
+      ngayChieu: isoNgayChieuGioChieu.format("DD/MM/YYYY"),
+      gioChieu: isoNgayChieuGioChieu.format("HH:mm"),
     };
 
     const newPhongVe = new phongVeSchema({

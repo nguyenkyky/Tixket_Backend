@@ -22,6 +22,7 @@ const danhSachPhimSchema = new Schema({
   dangChieu: Boolean,
   sapChieu: Boolean,
   thoiLuong: Number,
+  theLoai: Array,
 });
 
 // Schema for CumRap

@@ -34,7 +34,7 @@ const dataSchema = new Schema({
   dienVien: Array,
   daoDien: String,
   thoiLuong: Number,
-
+  theLoai: Array,
   trailer: String,
   hinhAnh: String,
   moTa: String,
