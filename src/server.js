@@ -36,13 +36,13 @@ const news = require("./routes/tintuc.router");
 // app.use(cors(corsOptions));
 
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "*",
   // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   // preflightContinue: false,
   optionsSuccessStatus: 204,
   credentials: true,
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 db();
 // app.use(log);
