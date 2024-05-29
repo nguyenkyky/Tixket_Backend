@@ -104,6 +104,7 @@ exports.editCumRap = async (req, res) => {
       diaChi,
       hinhAnh,
       khuVuc,
+      hotline,
     } = req.body;
 
     // Tìm và cập nhật thông tin trong heThongRapSchema
@@ -125,6 +126,7 @@ exports.editCumRap = async (req, res) => {
       diaChi,
       hinhAnh,
       khuVuc,
+      hotline,
     };
 
     await heThongRap.save();
@@ -139,6 +141,7 @@ exports.editCumRap = async (req, res) => {
           "cumRapChieu.$.diaChi": diaChi,
           "cumRapChieu.$.hinhAnh": hinhAnh,
           "cumRapChieu.$.khuVuc": khuVuc,
+          "cumRapChieu.$.hotline": hotline,
         },
       }
     );
@@ -158,6 +161,7 @@ exports.editCumRap = async (req, res) => {
             cumRap.diaChi = diaChi;
             cumRap.hinhAnh = hinhAnh;
             cumRap.khuVuc = khuVuc;
+            cumRap.hotline = hotline;
           }
         }
       }
@@ -253,8 +257,15 @@ exports.deleteHeThongRap = async (req, res) => {
 
 exports.addCumRap = async (req, res) => {
   try {
-    const { maHeThongRap, tenCumRap, maCumRap, diaChi, hinhAnh, khuVuc } =
-      req.body;
+    const {
+      maHeThongRap,
+      tenCumRap,
+      maCumRap,
+      diaChi,
+      hinhAnh,
+      khuVuc,
+      hotline,
+    } = req.body;
 
     // Tạo mới cụm rạp
     const newCumRap = {
@@ -263,6 +274,7 @@ exports.addCumRap = async (req, res) => {
       diaChi,
       hinhAnh,
       khuVuc,
+      hotline,
     };
 
     // Tìm hệ thống rạp và thêm cụm rạp mới vào trong heThongRapSchema
@@ -346,5 +358,39 @@ exports.deleteCumRap = async (req, res) => {
     });
   } catch (e) {
     return res.status(500).send("ERROR 500:" + e.message);
+  }
+};
+
+exports.cumRapTheoKhuVuc = async (req, res) => {
+  try {
+    const { location, theater } = req.query;
+
+    if (!location || !theater) {
+      return res.status(400).send("Missing required query parameters");
+    }
+
+    // Find the theater with the given maHeThongRap
+    const heThongRap = await heThongRapSchema.findOne({
+      maHeThongRap: theater,
+    });
+
+    if (!heThongRap) {
+      return res.status(404).send("Theater not found");
+    }
+
+    // Filter cumRapChieu by the given location
+    const cumRapFiltered = heThongRap.cumRapChieu.filter(
+      (cumRap) => cumRap.khuVuc === location
+    );
+
+    if (cumRapFiltered.length === 0) {
+      return res
+        .status(404)
+        .send("No theaters found in the specified location");
+    }
+
+    return res.status(200).json({ data: cumRapFiltered });
+  } catch (e) {
+    return res.status(500).send("ERROR 500: " + e.message);
   }
 };

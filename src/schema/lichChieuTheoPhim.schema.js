@@ -33,6 +33,7 @@ const cumRapSchema = new Schema({
   hinhAnh: String,
   diaChi: String,
   khuVuc: String,
+  hotline: String,
 });
 
 // Main schema for the collection

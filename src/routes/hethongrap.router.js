@@ -10,4 +10,5 @@ router.post("/newhethongrap", heThongRapController.addHeThongRap);
 router.post("/newcumrap", heThongRapController.addCumRap);
 router.delete("/deletecumrap", heThongRapController.deleteCumRap);
 router.delete("/deletehethongrap", heThongRapController.deleteHeThongRap);
+router.get("/cumraptheokhuvuc", heThongRapController.cumRapTheoKhuVuc);
 module.exports = router;

@@ -11,6 +11,7 @@ const cumRapSchema = new Schema({
   hinhAnh: String,
   diaChi: String,
   khuVuc: String,
+  hotline: String,
 });
 
 // Schema chính cho collection

@@ -114,6 +114,36 @@ exports.getLichChieuTheoCumRap = async (req, res) => {
   }
 };
 
+exports.getLichChieuTheoCumRap2 = async (req, res) => {
+  try {
+    const { maCumRap } = req.query; // Lấy tenHeThongRap và maCumRap từ body
+    const { maHeThongRap } = req.query;
+
+    // Tìm bản ghi ứng với tenHeThongRap
+    const heThongRap = await lichChieuTheoPhimSchema.findOne({
+      maHeThongRap: maHeThongRap,
+    });
+
+    if (!heThongRap) {
+      return res.status(404).send("HeThongRap not found");
+    }
+
+    // Tìm cumRap ứng với maCumRap trong heThongRap
+    const cumRap = heThongRap.cumRapChieu.find(
+      (cumRap) => cumRap.maCumRap === maCumRap.toString()
+    );
+
+    if (!cumRap) {
+      return res.status(404).send("CumRap not found in heThongRap");
+    }
+
+    // Trả về mảng danhSachPhim nằm bên trong cumRap
+    res.status(200).json({ danhSachPhim: cumRap.danhSachPhim });
+  } catch (e) {
+    res.status(500).send("ERROR 500:" + e.message);
+  }
+};
+
 exports.saveLichChieuTheoPhim = async (req, res) => {
   try {
     let maLichChieuRecord = await maPhimMaLichChieuSchema.findOne();
