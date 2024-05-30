@@ -11,5 +11,6 @@ router.get("/find", User.find);
 router.delete("/delete", User.delete);
 router.post("/update", User.update);
 router.post("/doiMatKhau", User.changePassword);
+router.post("/setvip", User.setVip);
 
 module.exports = router;

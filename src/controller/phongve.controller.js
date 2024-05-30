@@ -104,7 +104,7 @@ exports.datVe = async (req, res) => {
       diaChi: diaChi,
       hinhAnh: hinhAnh,
     };
-
+    user.tongChiTieu = user.tongChiTieu + tongTien;
     user.thongTinDatVe.push(ThongTinDatVe);
     await user.save();
     await phongveSchema.bulkWrite(updateOps);

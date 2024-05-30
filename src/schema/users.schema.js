@@ -54,6 +54,9 @@ const dataSchema = new Schema({
   maLoaiNguoiDung: {
     type: String,
   },
+  tongChiTieu: {
+    type: Number,
+  },
   thongTinDatVe: [ThongTinDatVeSchema],
 });
 

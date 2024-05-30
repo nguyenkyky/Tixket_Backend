@@ -26,6 +26,7 @@ exports.login = async (req, res) => {
       soDT: user.soDT,
       avatar: user.avatar,
       maLoaiNguoiDung: user.maLoaiNguoiDung,
+      tongChiTieu: user.tongChiTieu,
       accessToken: token,
     });
   } catch (error) {
@@ -58,6 +59,7 @@ exports.register = async (req, res) => {
       avatar:
         "https://cdn-media.sforum.vn/storage/app/media/wp-content/uploads/2024/02/avatar-anh-meo-cute-1.jpg",
       maLoaiNguoiDung: "KhachHang",
+      tongChiTieu: 0,
     });
 
     // Lưu user mới vào cơ sở dữ liệu
@@ -95,6 +97,7 @@ exports.thongTinDatVe = async (req, res) => {
       email: user.email,
       soDT: user.soDT,
       maLoaiNguoiDung: user.maLoaiNguoiDung,
+      tongChiTieu: user.tongChiTieu,
       thongTinDatVe: user.thongTinDatVe,
     });
   } catch (error) {
@@ -201,6 +204,30 @@ exports.changePassword = async (req, res) => {
     await user.save();
 
     res.status(200).json({ message: "Password changed successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+exports.setVip = async (req, res) => {
+  const { taiKhoanSetVip } = req.body;
+
+  try {
+    // Tìm người dùng dựa trên tài khoản
+    const user = await User.findOne({ taiKhoan: taiKhoanSetVip });
+
+    // Kiểm tra xem người dùng có tồn tại hay không
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Cập nhật loại người dùng thành Vip
+    user.maLoaiNguoiDung = "Vip";
+
+    // Lưu thay đổi
+    await user.save();
+
+    res.status(200).json({ message: "User set to Vip successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
