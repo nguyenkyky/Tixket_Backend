@@ -18,6 +18,9 @@ var dataSchema = new Schema({
   maTinTuc: {
     type: Number,
   },
+  orderId: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model(

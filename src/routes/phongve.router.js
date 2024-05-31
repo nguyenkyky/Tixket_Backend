@@ -6,5 +6,6 @@ var router = express.Router();
 router.get("/get", Phongve.getData);
 router.post("/datVe", verifyToken, Phongve.datVe);
 router.post("/kiemTraDatVe", Phongve.kiemTraDatVe);
+router.get("/orderid", Phongve.orderId);
 
 module.exports = router;

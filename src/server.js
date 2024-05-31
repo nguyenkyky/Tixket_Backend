@@ -10,6 +10,15 @@ var app = express();
 var bodyParserJSON = bodyParser.json();
 var bodyParserURLEncoded = bodyParser.urlencoded({ extended: true });
 var router = express.Router();
+const PayOS = require("@payos/node");
+const payos = new PayOS(
+  "be504d63-23c5-4b06-b62f-91dfc9bd6f2e",
+  "4a94014e-dbee-4bac-a4f3-922943469e6e",
+  "2ba7a7f1774eb07cc39761f1c9a8e8f06f41629b9efe422acb17e007262774ee"
+);
+app.use(express.static("public"));
+app.use(express.json());
+const DOMAIN = "http://localhost:3000";
 const test = require("./routes/topPages");
 const testData = require("./routes/testData.router");
 // const book = require("./routes/book.router");
@@ -36,13 +45,13 @@ const news = require("./routes/tintuc.router");
 // app.use(cors(corsOptions));
 
 const corsOptions = {
-  origin: "*",
-  // methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  // preflightContinue: false,
+  origin: ["http://localhost:3000", "http://192.168.1.2:3000"],
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  preflightContinue: false,
   optionsSuccessStatus: 204,
   credentials: true,
 };
-app.use(cors());
+app.use(cors(corsOptions));
 
 db();
 // app.use(log);
@@ -67,3 +76,25 @@ app.use("/api/quanLyNguoiDung", user);
 app.use("/api/phongve", phongve);
 app.use("/api/hethongrap", heThongRap);
 app.use("/api/news", news);
+
+app.post("/create-payment-link", async (req, res) => {
+  try {
+    const { tongTien, orderId, id } = req.body;
+    const order = {
+      amount: tongTien,
+      description: "Thanh toan hoa don",
+      orderCode: orderId,
+      returnUrl: `${DOMAIN}/checkout/${id}?payment=success`,
+      cancelUrl: `${DOMAIN}/home`,
+    };
+    const paymentLink = await payos.createPaymentLink(order);
+    res.json({ checkoutUrl: paymentLink.checkoutUrl });
+  } catch (error) {
+    res.status(500).send("Error creating payment link");
+  }
+});
+
+app.post("/receive-hook", async (req, res) => {
+  console.log(req.body);
+  res.json();
+});

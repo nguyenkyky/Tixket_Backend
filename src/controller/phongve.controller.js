@@ -1,6 +1,6 @@
 var phongveSchema = require("../schema/phongve.schema");
 var userSchema = require("../schema/users.schema");
-
+var maPhim_maLichChieuSchema = require("../schema/maPhim_maLichChieu.schema");
 exports.getData = async (req, res) => {
   const { MaLichChieu } = req.query;
   try {
@@ -112,5 +112,22 @@ exports.datVe = async (req, res) => {
     return res.status(200).json({ message: "Đặt vé thành công." });
   } catch (e) {
     res.status(500).send("ERROR 500: " + e.message);
+  }
+};
+
+exports.orderId = async (req, res) => {
+  try {
+    let OrderIdRecord = await maPhim_maLichChieuSchema.findOne();
+
+    if (!OrderIdRecord) {
+      return res.status(404).send("OrderId record not found");
+    }
+
+    const newOrderId = OrderIdRecord.orderId + 1;
+
+    await maPhim_maLichChieuSchema.updateOne({}, { orderId: newOrderId });
+    res.json(newOrderId);
+  } catch (e) {
+    res.status(500).send("ERROR 500:" + e.message);
   }
 };
