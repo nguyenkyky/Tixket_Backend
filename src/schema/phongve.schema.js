@@ -6,6 +6,7 @@ var collectionName = "phongve";
 
 const ThongTinPhimSchema = new Schema({
   maLichChieu: Number,
+  tenHeThongRap: String,
   tenCumRap: String,
   tenRap: String,
   diaChi: String,

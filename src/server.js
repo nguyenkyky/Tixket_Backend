@@ -5,11 +5,12 @@ var bodyParser = require("body-parser");
 var cors = require("cors");
 var properties = require("../config/properties");
 var db = require("../config/database");
-var apiRoutes = require("./routes/topPages");
+
 var app = express();
 var bodyParserJSON = bodyParser.json();
 var bodyParserURLEncoded = bodyParser.urlencoded({ extended: true });
 var router = express.Router();
+var verifyToken = require("./middlewares/user.middleware");
 const PayOS = require("@payos/node");
 const payos = new PayOS(
   "be504d63-23c5-4b06-b62f-91dfc9bd6f2e",
@@ -19,7 +20,7 @@ const payos = new PayOS(
 app.use(express.static("public"));
 app.use(express.json());
 const DOMAIN = "http://localhost:3000";
-const test = require("./routes/topPages");
+
 const testData = require("./routes/testData.router");
 // const book = require("./routes/book.router");
 const banner = require("./routes/banner.router");
@@ -66,7 +67,7 @@ app.listen(properties.PORT, (req, res) => {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 // app.use("/", book);
-app.use("/api", test);
+
 app.use("/test", testData);
 app.use("/banner", banner);
 app.use("/api/phim", phim);

@@ -3,13 +3,20 @@ mongoose.Promise = global.Promise;
 var collectionName = "lich_chieu_theo_phim";
 const Schema = mongoose.Schema;
 
+const orderSchema = new Schema({
+  orderId: Number,
+  nguoiDat: String,
+  soLuongGhe: Number,
+  tongTien: Number,
+});
+
 const lichChieuTheoPhimSchema = new Schema({
   maLichChieu: Number,
-  maRap: String,
-  tenRap: String,
+
   ngayChieuGioChieu: String,
   giaVe: Number,
   thoiLuong: Number,
+  order: [orderSchema],
 });
 
 // Schema for DanhSachPhim

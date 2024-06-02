@@ -1,6 +1,7 @@
 var phongveSchema = require("../schema/phongve.schema");
 var userSchema = require("../schema/users.schema");
 var maPhim_maLichChieuSchema = require("../schema/maPhim_maLichChieu.schema");
+var lichChieuTheoPhimSchema = require("../schema/lichChieuTheoPhim.schema");
 exports.getData = async (req, res) => {
   const { MaLichChieu } = req.query;
   try {
@@ -48,6 +49,7 @@ exports.kiemTraDatVe = async (req, res) => {
 
 exports.datVe = async (req, res) => {
   const {
+    orderId,
     maLichChieu,
     danhSachVe,
     tongTien,
@@ -87,15 +89,14 @@ exports.datVe = async (req, res) => {
 
     const ThongTinDatVe = {
       danhSachGhe: {
-        maHeThongRap: lichChieu.thongTinPhim.tenCumRap,
-        tenHeThongRap: lichChieu.thongTinPhim.tenCumRap,
-        maCumRap: lichChieu.thongTinPhim.tenRap,
-        tenCumRap: lichChieu.thongTinPhim.tenRap,
-        maRap: lichChieu.thongTinPhim.tenRap,
-        tenRap: lichChieu.thongTinPhim.tenRap,
         maGhe: danhSachVe.map((ve) => ve.maGhe),
         tenGhe: danhSachVe.map((ve) => ve.tenGhe),
       },
+
+      orderId: orderId,
+      tenHeThongRap: lichChieu.thongTinPhim.tenHeThongRap,
+      tenCumRap: lichChieu.thongTinPhim.tenCumRap,
+
       giaVe: tongTien,
       tenPhim: lichChieu.thongTinPhim.tenPhim,
       ngayDat: new Date(),
@@ -108,6 +109,58 @@ exports.datVe = async (req, res) => {
     user.thongTinDatVe.push(ThongTinDatVe);
     await user.save();
     await phongveSchema.bulkWrite(updateOps);
+
+    // Bổ sung logic để cập nhật vào lichChieuTheoPhimSchema(2/6)
+    const lichChieuTheoPhimRecord = await lichChieuTheoPhimSchema.findOne({
+      tenHeThongRap: lichChieu.thongTinPhim.tenHeThongRap,
+    });
+
+    if (!lichChieuTheoPhimRecord) {
+      return res
+        .status(404)
+        .json({ message: "lichChieuTheoPhim record not found" });
+    }
+
+    const cumRap = lichChieuTheoPhimRecord.cumRapChieu.find(
+      (cumRap) => cumRap.tenCumRap === lichChieu.thongTinPhim.tenCumRap
+    );
+
+    if (!cumRap) {
+      return res
+        .status(404)
+        .json({ message: "CumRap not found in lichChieuTheoPhim" });
+    }
+
+    const phim = cumRap.danhSachPhim.find(
+      (phim) => phim.tenPhim === lichChieu.thongTinPhim.tenPhim
+    );
+
+    if (!phim) {
+      return res
+        .status(404)
+        .json({ message: "Phim not found in danhSachPhim" });
+    }
+
+    const maLichChieuInt = parseInt(maLichChieu);
+    const lichChieuPhim = phim.lstLichChieuTheoPhim.find(
+      (lich) => lich.maLichChieu === maLichChieuInt
+    );
+
+    if (!lichChieuPhim) {
+      return res
+        .status(404)
+        .json({ message: "LichChieuPhim not found in lstLichChieuTheoPhim" });
+    }
+
+    // Thêm order vào mảng order của lichChieuPhim
+    lichChieuPhim.order.push({
+      orderId,
+      nguoiDat: user.taiKhoan,
+      soLuongGhe: danhSachVe.length,
+      tongTien,
+    });
+
+    await lichChieuTheoPhimRecord.save();
 
     return res.status(200).json({ message: "Đặt vé thành công." });
   } catch (e) {

@@ -301,6 +301,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
 
     const thongTinPhim = {
       maLichChieu: newMaLichChieu,
+      tenHeThongRap: heThongRap.tenHeThongRap,
       tenCumRap: cumRap.tenCumRap,
       tenRap: cumRap.tenRap,
       diaChi: cumRap.diaChi,

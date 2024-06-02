@@ -5,19 +5,18 @@ mongoose.Promise = global.Promise;
 var collectionName = "users";
 
 const GheSchema = new Schema({
-  maHeThongRap: String,
-  tenHeThongRap: String,
-  maCumRap: String,
-  tenCumRap: String,
-  maRap: String,
-  tenRap: String,
   maGhe: [],
   tenGhe: [],
 });
 
 const ThongTinDatVeSchema = new Schema({
+  orderId: Number,
   danhSachGhe: [GheSchema],
-  maVe: Number,
+
+  tenHeThongRap: String,
+
+  tenCumRap: String,
+
   ngayDat: Date,
   ngayChieu: String,
   gioChieu: String,
