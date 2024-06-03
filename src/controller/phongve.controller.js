@@ -158,6 +158,7 @@ exports.datVe = async (req, res) => {
       nguoiDat: user.taiKhoan,
       soLuongGhe: danhSachVe.length,
       tongTien,
+      ngayDat: new Date(),
     });
 
     await lichChieuTheoPhimRecord.save();

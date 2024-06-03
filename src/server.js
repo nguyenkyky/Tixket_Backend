@@ -31,6 +31,7 @@ const user = require("./routes/users.router");
 const phongve = require("./routes/phongve.router");
 const heThongRap = require("./routes/hethongrap.router");
 const news = require("./routes/tintuc.router");
+const thongke = require("./routes/thongke.router");
 
 // var whitelist = properties.CORS;
 // var corsOptions = {
@@ -77,13 +78,14 @@ app.use("/api/quanLyNguoiDung", user);
 app.use("/api/phongve", phongve);
 app.use("/api/hethongrap", heThongRap);
 app.use("/api/news", news);
+app.use("/api/thongke", thongke);
 
 app.post("/create-payment-link", async (req, res) => {
   try {
     const { tongTien, orderId, id } = req.body;
     const order = {
       amount: tongTien,
-      description: "Thanh toan hoa don",
+      description: "Đưa hết tiền đây",
       orderCode: orderId,
       returnUrl: `${DOMAIN}/checkout/${id}?payment=success`,
       cancelUrl: `${DOMAIN}/home`,

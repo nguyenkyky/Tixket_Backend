@@ -8,6 +8,7 @@ const orderSchema = new Schema({
   nguoiDat: String,
   soLuongGhe: Number,
   tongTien: Number,
+  ngayDat: Date,
 });
 
 const lichChieuTheoPhimSchema = new Schema({
