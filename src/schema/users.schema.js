@@ -56,6 +56,12 @@ const dataSchema = new Schema({
   tongChiTieu: {
     type: Number,
   },
+  resetPasswordToken:{
+    type: String,
+  },
+  resetPasswordExpires: {
+    type: String,
+  },
   thongTinDatVe: [ThongTinDatVeSchema],
 });
 

@@ -1,5 +1,9 @@
 const jwt = require("jsonwebtoken");
 const User = require("../schema/users.schema");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
+
 
 exports.login = async (req, res) => {
   const { taiKhoan, matKhau } = req.body;
@@ -232,3 +236,49 @@ exports.setVip = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+
+exports.recoverPassword = async (req, res) => { 
+  try {
+
+    const {taiKhoan} = req.query;
+    const user = await User.findOne({ taiKhoan });
+
+    if (!user) {
+      return res.status(404).send("User không tồn tại");
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hash = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    user.resetPasswordToken = hash;
+    user.resetPasswordExpires = Date.now() + 3600000; // Token expires in 1 hour
+
+    await user.save();
+
+    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: "nongdansanhdieu110@gmail.com",
+        pass: "KyLoan0401",
+      },
+    });
+
+    const mailOptions = {
+      to: user.email,
+      from: "nongdansanhdieu110@gmail.com",
+      subject: "Password Reset",
+      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
+      Please click on the following link, or paste this into your browser to complete the process:\n\n
+      ${resetUrl}\n\n
+      If you did not request this, please ignore this email and your password will remain unchanged.\n`,
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.status(200).send("Email đã được gửi để đặt lại mật khẩu");
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+}

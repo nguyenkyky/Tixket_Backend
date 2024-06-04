@@ -204,6 +204,15 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
       return res.status(404).send("CumRap not found in heThongRap");
     }
 
+     // Check for existing schedule with the same date and time in the same cumRap
+     const existingSchedule = cumRap.lichChieuPhim.find(
+      (lichChieu) => dayjs(lichChieu.ngayChieuGioChieu).isSame(isoNgayChieuGioChieu)
+    );
+
+    if (existingSchedule) {
+      return res.status(400).send("Lịch chiếu đã tồn tại trong cùng một cụm rạp");
+    }
+
     const newLichChieuPhim = {
       maLichChieu: newMaLichChieu,
       ngayChieuGioChieu: ngayChieuGioChieu,
@@ -230,6 +239,16 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
     if (!cumRapInLichChieuTheoPhim) {
       return res.status(404).send("CumRap not found in lichChieuTheoPhim");
     }
+
+    // Check for existing schedule with the same date and time in the same cumRap across all movies in lichChieuTheoPhim
+    for (const phim of cumRapInLichChieuTheoPhim.danhSachPhim) {
+      for (const lichChieu of phim.lstLichChieuTheoPhim) {
+        if (dayjs(lichChieu.ngayChieuGioChieu).isSame(isoNgayChieuGioChieu)) {
+          return res.status(400).send("Lịch chiếu đã tồn tại trong cùng một cụm rạp");
+        }
+      }
+    }
+
     const maPhimInt = parseInt(maPhim);
     const phimInDanhSachPhim = cumRapInLichChieuTheoPhim.danhSachPhim.find(
       (phim) => phim.maPhim === maPhimInt
@@ -252,6 +271,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
     }
 
     if (phimInDanhSachPhim) {
+      
       phimInDanhSachPhim.lstLichChieuTheoPhim.push(newLichChieuPhim);
     }
 
