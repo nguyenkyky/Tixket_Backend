@@ -163,3 +163,70 @@ exports.thongKeThangTruoc = async (req, res) => {
     res.status(500).send("ERROR 500: " + e.message);
   }
 };
+
+exports.layThongKe7Ngay = async (req, res) => {
+  try {
+    const startDate = moment().subtract(7, "days").startOf("day").toDate();
+    const endDate = moment().endOf("day").toDate();
+
+    const result = await lichChieuTheoPhimSchema.aggregate([
+      {
+        $unwind: "$cumRapChieu",
+      },
+      {
+        $unwind: "$cumRapChieu.danhSachPhim",
+      },
+      {
+        $unwind: "$cumRapChieu.danhSachPhim.lstLichChieuTheoPhim",
+      },
+      {
+        $unwind: "$cumRapChieu.danhSachPhim.lstLichChieuTheoPhim.order",
+      },
+      {
+        $match: {
+          "cumRapChieu.danhSachPhim.lstLichChieuTheoPhim.order.ngayDat": {
+            $gte: startDate,
+            $lte: endDate,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            maHeThongRap: "$maHeThongRap",
+            tenHeThongRap: "$tenHeThongRap",
+            ngayDat: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$cumRapChieu.danhSachPhim.lstLichChieuTheoPhim.order.ngayDat",
+              },
+            },
+          },
+          totalTickets: {
+            $sum: "$cumRapChieu.danhSachPhim.lstLichChieuTheoPhim.order.soLuongGhe",
+          },
+          totalAmount: {
+            $sum: "$cumRapChieu.danhSachPhim.lstLichChieuTheoPhim.order.tongTien",
+          },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          maHeThongRap: "$_id.maHeThongRap",
+          tenHeThongRap: "$_id.tenHeThongRap",
+          ngayDat: "$_id.ngayDat",
+          totalTickets: 1,
+          totalAmount: 1,
+        },
+      },
+      {
+        $sort: { ngayDat: 1 },
+      },
+    ]);
+
+    res.status(200).json(result);
+  } catch (e) {
+    res.status(500).send("ERROR 500: " + e.message);
+  }
+};
