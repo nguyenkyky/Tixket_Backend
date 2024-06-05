@@ -27,6 +27,11 @@ const heThongRapChieuSchema = new Schema({
   logo: String,
 });
 
+const ratingSchema = new Schema({
+  taiKhoan: String,
+  rate: Number,
+});
+
 const dataSchema = new Schema({
   heThongRapChieu: [heThongRapChieuSchema],
   maPhim: Number,
@@ -45,6 +50,7 @@ const dataSchema = new Schema({
   sapChieu: Boolean,
   ngayKhoiChieu: Date,
   danhGia: Number,
+  rating: [ratingSchema],
 });
 
 module.exports = mongoose.model("detail_phim", dataSchema, collectionName);
