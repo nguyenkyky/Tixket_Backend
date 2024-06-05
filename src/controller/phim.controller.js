@@ -53,6 +53,7 @@ exports.savePhim = async (req, res) => {
       sapChieu,
       thoiLuong,
       theLoai,
+      dienVien,
     };
 
     const newPhim = new phimSchema({
@@ -143,49 +144,44 @@ exports.capNhatPhim = async (req, res) => {
       theLoai,
     } = req.body;
 
+    console.log(theLoai);
+    console.log(theLoai.length);
+
     // Convert ngayKhoiChieu from "DD/MM/YYYY" to "YYYY-MM-DD"
     const formattedNgayKhoiChieu = ngayKhoiChieu.split("/").reverse().join("-");
 
+    // Prepare update object
+    const updateData = {
+      dangChieu,
+      danhGia,
+      daoDien,
+      dienVien,
+      hinhAnh,
+      hot,
+      moTa,
+      ngayKhoiChieu: new Date(formattedNgayKhoiChieu),
+      sapChieu,
+      tenPhim,
+      thoiLuong,
+      trailer,
+    };
+
+    // Add 'theLoai' to the update object only if it's not an empty array
+    if (theLoai && theLoai.length > 0) {
+      updateData.theLoai = theLoai;
+    } else {
+      updateData.theLoai = [];
+    }
+
     const updatedPhim = await phimSchema.findOneAndUpdate(
       { maPhim: maPhim },
-      {
-        $set: {
-          dangChieu,
-          danhGia,
-          daoDien,
-          dienVien,
-          hinhAnh,
-          hot,
-          moTa,
-          ngayKhoiChieu: new Date(formattedNgayKhoiChieu),
-          sapChieu,
-          tenPhim,
-          thoiLuong,
-          trailer,
-          theLoai,
-        },
-      },
+      { $set: updateData },
       { new: true }
     );
+
     await detailPhimSchema.findOneAndUpdate(
       { maPhim: maPhim },
-      {
-        $set: {
-          dangChieu,
-          danhGia,
-          daoDien,
-          dienVien,
-          hinhAnh,
-          hot,
-          moTa,
-          ngayKhoiChieu: new Date(formattedNgayKhoiChieu),
-          sapChieu,
-          tenPhim,
-          thoiLuong,
-          trailer,
-          theLoai,
-        },
-      },
+      { $set: updateData },
       { new: true }
     );
 
@@ -201,12 +197,15 @@ exports.capNhatPhim = async (req, res) => {
             phim.dangChieu = dangChieu;
             phim.sapChieu = sapChieu;
             phim.thoiLuong = thoiLuong;
-            phim.theLoai = theLoai;
+            phim.theLoai =
+              theLoai && theLoai.length > 0 ? theLoai : phim.theLoai;
+            phim.dienVien = dienVien;
           }
         }
       }
       await lichChieuTheoPhimDoc.save();
     }
+
     if (!updatedPhim) {
       return res.status(404).send("Phim not found");
     }

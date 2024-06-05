@@ -2,8 +2,14 @@ const jwt = require("jsonwebtoken");
 const User = require("../schema/users.schema");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const { OAuth2Client } = require("google-auth-library");
 
-
+const GOOGLE_MAILER_CLIENT_ID =
+  "618162990293-kgntjb5c4mvjb4765shg7huhc2nvl38o.apps.googleusercontent.com";
+const GOOGLE_MAILER_CLIENT_SECRET = "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";
+const GOOGLE_MAILER_REFRESH_TOKEN =
+  "1//04_e5XUCwpZ0vCgYIARAAGAQSNwF-L9Ir6ip7bMAqpf8-kkBGib0K6HXYJR7GsPp6hKLFUtl4Ioue6oQfm3Bjo_Ud0eXBWiOiE0I";
+const ADMIN_EMAIL_ADDRESS = "nguyenkyct@gmail.com";
 
 exports.login = async (req, res) => {
   const { taiKhoan, matKhau } = req.body;
@@ -237,11 +243,22 @@ exports.setVip = async (req, res) => {
   }
 };
 
-
-exports.recoverPassword = async (req, res) => { 
+exports.recoverPassword = async (req, res) => {
   try {
+    const myOAuth2Client = new OAuth2Client(
+      GOOGLE_MAILER_CLIENT_ID,
+      GOOGLE_MAILER_CLIENT_SECRET
+    );
+    // Set Refresh Token vào OAuth2Client Credentials
+    myOAuth2Client.setCredentials({
+      refresh_token: GOOGLE_MAILER_REFRESH_TOKEN,
+    });
 
-    const {taiKhoan} = req.query;
+    const myAccessTokenObject = await myOAuth2Client.getAccessToken();
+    const myAccessToken = myAccessTokenObject?.token;
+
+    const { taiKhoan } = req.query;
+
     const user = await User.findOne({ taiKhoan });
 
     if (!user) {
@@ -259,16 +276,19 @@ exports.recoverPassword = async (req, res) => {
     const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
-      service: "Gmail",
+      service: "gmail",
       auth: {
-        user: "nongdansanhdieu110@gmail.com",
-        pass: "KyLoan0401",
+        type: "OAuth2",
+        user: ADMIN_EMAIL_ADDRESS,
+        clientId: GOOGLE_MAILER_CLIENT_ID,
+        clientSecret: GOOGLE_MAILER_CLIENT_SECRET,
+        refreshToken: GOOGLE_MAILER_REFRESH_TOKEN,
+        accessToken: myAccessToken,
       },
     });
 
     const mailOptions = {
       to: user.email,
-      from: "nongdansanhdieu110@gmail.com",
       subject: "Password Reset",
       text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n
       Please click on the following link, or paste this into your browser to complete the process:\n\n
@@ -281,4 +301,31 @@ exports.recoverPassword = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
-}
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token, matKhau } = req.body;
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).send("Token không hợp lệ hoặc đã hết hạn");
+    }
+
+    user.matKhau = matKhau;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    res.status(200).send("Mật khẩu đã được đặt lại thành công");
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
