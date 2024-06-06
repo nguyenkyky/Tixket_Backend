@@ -144,9 +144,6 @@ exports.capNhatPhim = async (req, res) => {
       theLoai,
     } = req.body;
 
-    console.log(theLoai);
-    console.log(theLoai.length);
-
     // Convert ngayKhoiChieu from "DD/MM/YYYY" to "YYYY-MM-DD"
     const formattedNgayKhoiChieu = ngayKhoiChieu.split("/").reverse().join("-");
 

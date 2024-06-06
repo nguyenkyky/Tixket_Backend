@@ -14,6 +14,7 @@ const ThongTinPhimSchema = new Schema({
   hinhAnh: String,
   ngayChieu: String,
   gioChieu: String,
+  map: String,
 });
 
 const GheSchema = new Schema({

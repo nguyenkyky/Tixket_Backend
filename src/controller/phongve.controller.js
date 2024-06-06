@@ -57,6 +57,7 @@ exports.datVe = async (req, res) => {
     gioChieu,
     diaChi,
     hinhAnh,
+    map,
   } = req.body;
   const userId = req.user.id;
   try {
@@ -96,7 +97,7 @@ exports.datVe = async (req, res) => {
       orderId: orderId,
       tenHeThongRap: lichChieu.thongTinPhim.tenHeThongRap,
       tenCumRap: lichChieu.thongTinPhim.tenCumRap,
-
+      map: map,
       giaVe: tongTien,
       tenPhim: lichChieu.thongTinPhim.tenPhim,
       ngayDat: new Date(),

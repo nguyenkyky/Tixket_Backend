@@ -18,6 +18,7 @@ const cumRapChieuSchema = new Schema({
   diaChi: String,
   khuVuc: String,
   hotline: String,
+  map: String,
 });
 
 const heThongRapChieuSchema = new Schema({

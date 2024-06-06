@@ -16,7 +16,7 @@ const ThongTinDatVeSchema = new Schema({
   tenHeThongRap: String,
 
   tenCumRap: String,
-
+  map: String,
   ngayDat: Date,
   ngayChieu: String,
   gioChieu: String,
@@ -56,7 +56,7 @@ const dataSchema = new Schema({
   tongChiTieu: {
     type: Number,
   },
-  resetPasswordToken:{
+  resetPasswordToken: {
     type: String,
   },
   resetPasswordExpires: {

@@ -105,6 +105,7 @@ exports.editCumRap = async (req, res) => {
       hinhAnh,
       khuVuc,
       hotline,
+      map,
     } = req.body;
 
     // Tìm và cập nhật thông tin trong heThongRapSchema
@@ -127,6 +128,7 @@ exports.editCumRap = async (req, res) => {
       hinhAnh,
       khuVuc,
       hotline,
+      map,
     };
 
     await heThongRap.save();
@@ -142,6 +144,7 @@ exports.editCumRap = async (req, res) => {
           "cumRapChieu.$.hinhAnh": hinhAnh,
           "cumRapChieu.$.khuVuc": khuVuc,
           "cumRapChieu.$.hotline": hotline,
+          "cumRapChieu.$.map": map,
         },
       }
     );
@@ -162,6 +165,7 @@ exports.editCumRap = async (req, res) => {
             cumRap.hinhAnh = hinhAnh;
             cumRap.khuVuc = khuVuc;
             cumRap.hotline = hotline;
+            cumRap.map = map;
           }
         }
       }
@@ -265,6 +269,7 @@ exports.addCumRap = async (req, res) => {
       hinhAnh,
       khuVuc,
       hotline,
+      map,
     } = req.body;
 
     // Tạo mới cụm rạp
@@ -275,6 +280,7 @@ exports.addCumRap = async (req, res) => {
       hinhAnh,
       khuVuc,
       hotline,
+      map,
     };
 
     // Tìm hệ thống rạp và thêm cụm rạp mới vào trong heThongRapSchema

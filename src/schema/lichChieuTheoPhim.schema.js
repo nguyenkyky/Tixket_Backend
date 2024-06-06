@@ -43,6 +43,7 @@ const cumRapSchema = new Schema({
   diaChi: String,
   khuVuc: String,
   hotline: String,
+  map: String,
 });
 
 // Main schema for the collection

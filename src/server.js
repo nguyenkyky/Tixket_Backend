@@ -11,12 +11,14 @@ var bodyParserJSON = bodyParser.json();
 var bodyParserURLEncoded = bodyParser.urlencoded({ extended: true });
 var router = express.Router();
 var verifyToken = require("./middlewares/user.middleware");
+
 const PayOS = require("@payos/node");
 const payos = new PayOS(
   "be504d63-23c5-4b06-b62f-91dfc9bd6f2e",
   "4a94014e-dbee-4bac-a4f3-922943469e6e",
   "2ba7a7f1774eb07cc39761f1c9a8e8f06f41629b9efe422acb17e007262774ee"
 );
+
 app.use(express.static("public"));
 app.use(express.json());
 const DOMAIN = "http://localhost:3000";
