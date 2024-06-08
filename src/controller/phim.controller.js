@@ -41,6 +41,8 @@ exports.savePhim = async (req, res) => {
       thoiLuong,
       trailer,
       theLoai,
+      poster,
+      quocGia,
     } = req.body;
 
     const danhSachPhimEntry = {
@@ -63,6 +65,7 @@ exports.savePhim = async (req, res) => {
       daoDien,
       dienVien,
       hinhAnh,
+      poster,
       hot,
       moTa,
       ngayKhoiChieu: new Date(ngayKhoiChieu.split("/").reverse().join("-")),
@@ -71,6 +74,7 @@ exports.savePhim = async (req, res) => {
       thoiLuong,
       trailer,
       theLoai,
+      quocGia,
     });
 
     const newDetailPhim = new detailPhimSchema({
@@ -81,6 +85,7 @@ exports.savePhim = async (req, res) => {
       daoDien,
       dienVien,
       hinhAnh,
+      poster,
       hot,
       moTa,
       ngayKhoiChieu: new Date(ngayKhoiChieu.split("/").reverse().join("-")),
@@ -89,6 +94,7 @@ exports.savePhim = async (req, res) => {
       thoiLuong,
       trailer,
       theLoai,
+      quocGia,
     });
 
     await newPhim.save();
@@ -142,6 +148,8 @@ exports.capNhatPhim = async (req, res) => {
       thoiLuong,
       trailer,
       theLoai,
+      poster,
+      quocGia,
     } = req.body;
 
     // Convert ngayKhoiChieu from "DD/MM/YYYY" to "YYYY-MM-DD"
@@ -161,6 +169,8 @@ exports.capNhatPhim = async (req, res) => {
       tenPhim,
       thoiLuong,
       trailer,
+      poster,
+      quocGia,
     };
 
     // Add 'theLoai' to the update object only if it's not an empty array

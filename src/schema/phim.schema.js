@@ -27,8 +27,13 @@ var dataSchema = new Schema({
   thoiLuong: {
     type: Number,
   },
-
+  quocGia: {
+    type: String,
+  },
   hinhAnh: {
+    type: String,
+  },
+  poster: {
     type: String,
   },
   moTa: {

@@ -14,5 +14,6 @@ router.post("/doiMatKhau", User.changePassword);
 router.post("/setvip", User.setVip);
 router.get("/recoverPassword", User.recoverPassword);
 router.post("/resetPassword", User.resetPassword);
+router.post("/kiemTraDangNhap", verifyToken, User.kiemTraDangNhap);
 
 module.exports = router;

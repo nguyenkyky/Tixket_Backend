@@ -19,6 +19,7 @@ const cumRapChieuSchema = new Schema({
   khuVuc: String,
   hotline: String,
   map: String,
+  banner: Array,
 });
 
 const heThongRapChieuSchema = new Schema({
@@ -42,8 +43,10 @@ const dataSchema = new Schema({
   daoDien: String,
   thoiLuong: Number,
   theLoai: Array,
+  quocGia: String,
   trailer: String,
   hinhAnh: String,
+  poster: String,
   moTa: String,
   maNhom: String,
   hot: Boolean,

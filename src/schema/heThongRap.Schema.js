@@ -13,6 +13,7 @@ const cumRapSchema = new Schema({
   khuVuc: String,
   hotline: String,
   map: String,
+  banner: Array,
 });
 
 // Schema chính cho collection

@@ -171,6 +171,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
       sapChieu,
       dangChieu,
       theLoai,
+      dienVien,
     } = req.body;
 
     // console.log("ngay chieu gio chieu", ngayChieuGioChieu);
@@ -269,6 +270,7 @@ exports.saveLichChieuTheoPhim = async (req, res) => {
         sapChieu,
         thoiLuong,
         theLoai,
+        dienVien,
         lstLichChieuTheoPhim: [newLichChieuPhim],
       };
       cumRapInLichChieuTheoPhim.danhSachPhim.push(newPhim);

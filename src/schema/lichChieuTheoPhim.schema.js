@@ -44,6 +44,7 @@ const cumRapSchema = new Schema({
   khuVuc: String,
   hotline: String,
   map: String,
+  banner: Array,
 });
 
 // Main schema for the collection
