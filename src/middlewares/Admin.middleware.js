@@ -8,7 +8,8 @@ const verifyAdmin = (req, res, next) => {
 
   jwt.verify(token, process.env.TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403); // Nếu token không hợp lệ, trả về 403 Forbidden
-    if (user.maLoaiNguoiDung !== "admin") return res.sendStatus(403); // Nếu người dùng không phải admin, trả về 403 Forbidden
+    // console.log(user);
+    if (user.role !== "Admin") return res.sendStatus(403); // Nếu người dùng không phải admin, trả về 403 Forbidden
     req.user = user; // Lưu thông tin người dùng vào req.user để sử dụng ở các handler tiếp theo
     next(); // Chuyển sang middleware/handler tiếp theo
   });
