@@ -337,3 +337,11 @@ exports.kiemTraDangNhap = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+exports.kiemTraAdmin = async (req, res) => {
+  try {
+    res.status(200).json({ message: "Token hợp lệ" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
