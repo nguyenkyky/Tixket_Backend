@@ -9,7 +9,7 @@ router.put("/update/hethongrap", heThongRapController.editHeThongRap);
 router.get("/chitietcumrap", heThongRapController.getCumRapTheoTen);
 router.put("/update/cumrap", heThongRapController.editCumRap);
 router.post("/newhethongrap", heThongRapController.addHeThongRap);
-router.post("/newcumrap", verifyAdmin, heThongRapController.addCumRap);
+router.post("/newcumrap",  heThongRapController.addCumRap);
 router.delete("/deletecumrap", heThongRapController.deleteCumRap);
 router.delete("/deletehethongrap", heThongRapController.deleteHeThongRap);
 router.get("/cumraptheokhuvuc", heThongRapController.cumRapTheoKhuVuc);

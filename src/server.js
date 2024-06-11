@@ -11,6 +11,7 @@ var bodyParserJSON = bodyParser.json();
 var bodyParserURLEncoded = bodyParser.urlencoded({ extended: true });
 var router = express.Router();
 var verifyToken = require("./middlewares/user.middleware");
+var verifyAdmin = require("./middlewares/Admin.middleware");
 
 const PayOS = require("@payos/node");
 const payos = new PayOS(
@@ -78,9 +79,9 @@ app.use("/api/lichchieuphim", lichChieuTheoPhim);
 app.use("/api/details", detailPhim);
 app.use("/api/quanLyNguoiDung", user);
 app.use("/api/phongve", phongve);
-app.use("/api/hethongrap", heThongRap);
+app.use("/api/hethongrap", verifyAdmin, heThongRap);
 app.use("/api/news", news);
-app.use("/api/thongke", thongke);
+app.use("/api/thongke", verifyAdmin, thongke);
 
 app.post("/create-payment-link", async (req, res) => {
   try {
