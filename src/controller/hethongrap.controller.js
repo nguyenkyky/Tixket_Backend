@@ -44,6 +44,15 @@ exports.editHeThongRap = async (req, res) => {
   try {
     const { tenHeThongRap, maHeThongRap, newMaHeThongRap, logo } = req.body;
 
+    if (newMaHeThongRap !== maHeThongRap) {
+      const existingHeThongRap = await heThongRapSchema.findOne({
+        maHeThongRap: newMaHeThongRap,
+      });
+      if (existingHeThongRap) {
+        return res.status(400).send("Mã hệ thống rạp bị trùng");
+      }
+    }
+
     // Tìm và cập nhật thông tin trong heThongRapSchema
     const heThongRap = await heThongRapSchema.findOneAndUpdate(
       { maHeThongRap },
@@ -113,6 +122,16 @@ exports.editCumRap = async (req, res) => {
     const heThongRap = await heThongRapSchema.findOne({ maHeThongRap });
     if (!heThongRap) {
       return res.status(404).send("He thong rap not found");
+    }
+
+    if (newMaCumRap !== maCumRap) {
+      // Kiểm tra xem mã cụm rạp mới có trùng không
+      const existingCumRap = heThongRap.cumRapChieu.find(
+        (cumRap) => cumRap.maCumRap === newMaCumRap
+      );
+      if (existingCumRap) {
+        return res.status(400).send("Mã cụm rạp bị trùng");
+      }
     }
 
     let cumRapIndex = heThongRap.cumRapChieu.findIndex(
@@ -188,6 +207,12 @@ exports.editCumRap = async (req, res) => {
 exports.addHeThongRap = async (req, res) => {
   try {
     const { tenHeThongRap, maHeThongRap, logo } = req.body;
+    const existingHeThongRap = await heThongRapSchema.findOne({
+      maHeThongRap: maHeThongRap,
+    });
+    if (existingHeThongRap) {
+      return res.status(400).send("Mã hệ thống rạp bị trùng");
+    }
 
     // Tạo mới một hệ thống rạp
     const newHeThongRap = new heThongRapSchema({
@@ -293,6 +318,14 @@ exports.addCumRap = async (req, res) => {
     const heThongRap = await heThongRapSchema.findOne({ maHeThongRap });
     if (!heThongRap) {
       return res.status(404).send("He thong rap not found");
+    }
+
+    // Kiểm tra xem mã cụm rạp mới có trùng không
+    const existingCumRap = heThongRap.cumRapChieu.find(
+      (cumRap) => cumRap.maCumRap === maCumRap
+    );
+    if (existingCumRap) {
+      return res.status(400).send("Mã cụm rạp bị trùng");
     }
 
     heThongRap.cumRapChieu.push(newCumRap);
