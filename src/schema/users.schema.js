@@ -47,6 +47,7 @@ const dataSchema = new Schema({
   },
   email: {
     type: String,
+    unique: true,
   },
   avatar: {
     type: String,

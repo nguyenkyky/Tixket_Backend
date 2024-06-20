@@ -4,6 +4,7 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const { OAuth2Client } = require("google-auth-library");
 const admin = require("../util/firebase/firebaseAdmin");
+const jwtSign = require("../util/jwt/jwt");
 
 const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_MAILER_CLIENT_ID;
 const GOOGLE_MAILER_CLIENT_SECRET = process.env.TZ_MAILER_CLIENT_SECRET;
@@ -24,13 +25,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const token = jwt.sign(
-      { uid: user.uid, role: user.maLoaiNguoiDung },
-      process.env.TOKEN_SECRET,
-      {
-        expiresIn: "3h",
-      }
-    );
+    const token = jwtSign(user);
 
     res.json({
       taiKhoan: user.taiKhoan,
@@ -171,7 +166,8 @@ exports.find = async (req, res) => {
 };
 
 exports.update = async (req, res) => {
-  const { hoTen, email, soDT, avatar, taiKhoan, newTaiKhoan } = req.body;
+  const { hoTen, email, soDT, avatar, taiKhoan, newTaiKhoan, newEmail } =
+    req.body;
 
   try {
     // Find the user
@@ -185,13 +181,31 @@ exports.update = async (req, res) => {
     if (newTaiKhoan !== taiKhoan) {
       const existingUser = await User.findOne({ taiKhoan: newTaiKhoan });
       if (existingUser) {
-        return res.status(400).json({ message: "New username already exists" });
+        return res.status(400).json({ message: "Username đã được sử dụng" });
+      }
+    }
+
+    if (
+      newEmail.length === 0 ||
+      newTaiKhoan.length === 0 ||
+      hoTen.length === 0 ||
+      soDT.length === 0
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Vui lòng điền đầy đủ thông tin" });
+    }
+
+    if (newEmail !== email) {
+      const existingUser = await User.findOne({ email: newEmail });
+      if (existingUser) {
+        return res.status(400).json({ message: "Email đã được sử dụng" });
       }
     }
 
     // Update the user
     user.hoTen = hoTen;
-    user.email = email;
+    user.email = newEmail;
     user.soDT = soDT;
     user.avatar = avatar;
     user.taiKhoan = newTaiKhoan;
@@ -307,7 +321,7 @@ exports.recoverPassword = async (req, res) => {
 
     await user.save();
 
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.DOMAIN}/reset-password/${resetToken}`;
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
