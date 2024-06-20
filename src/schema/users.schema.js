@@ -21,13 +21,18 @@ const ThongTinDatVeSchema = new Schema({
   ngayChieu: String,
   gioChieu: String,
   tenPhim: String,
-  giaVe: String,
+  giaVe: Number,
+  khuyenMai: Number,
+  tongTien: Number,
   thoiLuongPhim: Number,
   diaChi: String,
   hinhAnh: String,
 });
 
 const dataSchema = new Schema({
+  uid: {
+    type: "String",
+  },
   taiKhoan: {
     type: String,
     required: true,
@@ -35,7 +40,6 @@ const dataSchema = new Schema({
   },
   matKhau: {
     type: String,
-    required: true,
   },
   hoTen: {
     type: String,

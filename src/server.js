@@ -15,14 +15,13 @@ var verifyAdmin = require("./middlewares/Admin.middleware");
 
 const PayOS = require("@payos/node");
 const payos = new PayOS(
-  "be504d63-23c5-4b06-b62f-91dfc9bd6f2e",
-  "4a94014e-dbee-4bac-a4f3-922943469e6e",
-  "2ba7a7f1774eb07cc39761f1c9a8e8f06f41629b9efe422acb17e007262774ee"
+  process.env.CLIENT_ID,
+  process.env.API_KEY,
+  process.env.CHECKSUM_KEY
 );
 
 app.use(express.static("public"));
 app.use(express.json());
-const DOMAIN = "http://localhost:3000";
 
 const testData = require("./routes/testData.router");
 // const book = require("./routes/book.router");
@@ -66,7 +65,9 @@ app.use(bodyParserURLEncoded);
 // apiRoutes(router);
 
 app.listen(properties.PORT, (req, res) => {
-  console.log(`Server is running on ${properties.PORT} port.`);
+  console.log(
+    `Server is running on ${process.env.PORT || properties.PORT} port.`
+  );
 });
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -90,8 +91,8 @@ app.post("/create-payment-link", async (req, res) => {
       amount: tongTien,
       description: "Đưa hết tiền đây",
       orderCode: orderId,
-      returnUrl: `${DOMAIN}/checkout/success/${id}?payment=success`,
-      cancelUrl: `${DOMAIN}/home`,
+      returnUrl: `${process.env.DOMAIN}/checkout/success/${id}?payment=success`,
+      cancelUrl: `${process.env.DOMAIN}/home`,
     };
     const paymentLink = await payos.createPaymentLink(order);
     res.json({ checkoutUrl: paymentLink.checkoutUrl });

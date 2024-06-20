@@ -17,5 +17,6 @@ router.get("/recoverPassword", User.recoverPassword);
 router.post("/resetPassword", User.resetPassword);
 router.post("/kiemTraDangNhap", verifyToken, User.kiemTraDangNhap);
 router.post("/kiemTraAdmin", verifyAdmin, User.kiemTraAdmin);
+router.post("/firebaseLogin", User.firebaseLogin);
 
 module.exports = router;

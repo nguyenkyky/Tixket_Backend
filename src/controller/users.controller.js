@@ -3,13 +3,12 @@ const User = require("../schema/users.schema");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const { OAuth2Client } = require("google-auth-library");
+const admin = require("../util/firebase/firebaseAdmin");
 
-const GOOGLE_MAILER_CLIENT_ID =
-  "618162990293-kgntjb5c4mvjb4765shg7huhc2nvl38o.apps.googleusercontent.com";
-const GOOGLE_MAILER_CLIENT_SECRET = "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";
-const GOOGLE_MAILER_REFRESH_TOKEN =
-  "1//04_e5XUCwpZ0vCgYIARAAGAQSNwF-L9Ir6ip7bMAqpf8-kkBGib0K6HXYJR7GsPp6hKLFUtl4Ioue6oQfm3Bjo_Ud0eXBWiOiE0I";
-const ADMIN_EMAIL_ADDRESS = "nguyenkyct@gmail.com";
+const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_MAILER_CLIENT_ID;
+const GOOGLE_MAILER_CLIENT_SECRET = process.env.TZ_MAILER_CLIENT_SECRET;
+const GOOGLE_MAILER_REFRESH_TOKEN = process.env.GOOGLE_MAILER_REFRESH_TOKEN;
+const ADMIN_EMAIL_ADDRESS = process.env.ADMIN_EMAIL_ADDRESS;
 
 exports.login = async (req, res) => {
   const { taiKhoan, matKhau } = req.body;
@@ -26,7 +25,7 @@ exports.login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user._id, role: user.maLoaiNguoiDung },
+      { uid: user.uid, role: user.maLoaiNguoiDung },
       process.env.TOKEN_SECRET,
       {
         expiresIn: "3h",
@@ -48,6 +47,36 @@ exports.login = async (req, res) => {
   }
 };
 
+exports.firebaseLogin = async (req, res) => {
+  const { token } = req.body;
+  try {
+    // Verify Firebase token
+    const decodedToken = await admin.auth().verifyIdToken(token);
+
+    const { uid, email, name, picture } = decodedToken;
+
+    let user = await User.findOne({ uid });
+
+    if (!user) {
+      user = new User({
+        uid,
+        taiKhoan: email,
+        hoTen: name,
+        email,
+        avatar: picture,
+        maLoaiNguoiDung: "KhachHang",
+        tongChiTieu: 0,
+      });
+      await user.save();
+    }
+
+    res.json({ user, accessToken: token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server error");
+  }
+};
+
 exports.register = async (req, res) => {
   const { username, hoTen, matKhau, xacNhanMatKhau } = req.body;
 
@@ -66,6 +95,7 @@ exports.register = async (req, res) => {
     // Tạo mới user với thông tin mặc định
     const newUser = new User({
       taiKhoan: username,
+      uid: username,
       hoTen: hoTen,
       matKhau: matKhau,
       email: "",
@@ -97,10 +127,10 @@ exports.danhSachNguoiDung = async (req, res) => {
 };
 
 exports.thongTinDatVe = async (req, res) => {
-  const userId = req.user.id;
+  const userId = req.user.uid;
 
   try {
-    const user = await User.findById(userId); // Tìm người dùng dựa trên userId
+    const user = await User.findOne({ uid: userId }); // Tìm người dùng dựa trên userId
     if (!user) {
       return res.status(404).json({ message: "Người dùng không tồn tại." });
     }

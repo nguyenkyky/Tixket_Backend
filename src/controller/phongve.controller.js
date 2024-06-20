@@ -52,6 +52,8 @@ exports.datVe = async (req, res) => {
     orderId,
     maLichChieu,
     danhSachVe,
+    giaVe,
+    khuyenMai,
     tongTien,
     ngayChieu,
     gioChieu,
@@ -59,9 +61,9 @@ exports.datVe = async (req, res) => {
     hinhAnh,
     map,
   } = req.body;
-  const userId = req.user.id;
+  const userId = req.user.uid;
   try {
-    const user = await userSchema.findById(userId); // Tìm người dùng dựa trên userId
+    const user = await userSchema.findOne({ uid: userId }); // Tìm người dùng dựa trên userId
     if (!user) {
       return res.status(404).json({ message: "Người dùng không tồn tại." });
     }
@@ -98,7 +100,9 @@ exports.datVe = async (req, res) => {
       tenHeThongRap: lichChieu.thongTinPhim.tenHeThongRap,
       tenCumRap: lichChieu.thongTinPhim.tenCumRap,
       map: map,
-      giaVe: tongTien,
+      giaVe: giaVe,
+      khuyenMai: khuyenMai,
+      tongTien: tongTien,
       tenPhim: lichChieu.thongTinPhim.tenPhim,
       ngayDat: new Date(),
       ngayChieu: ngayChieu,
