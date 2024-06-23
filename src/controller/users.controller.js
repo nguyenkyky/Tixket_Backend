@@ -5,11 +5,18 @@ const nodemailer = require("nodemailer");
 const { OAuth2Client } = require("google-auth-library");
 const admin = require("../util/firebase/firebaseAdmin");
 const jwtSign = require("../util/jwt/jwt");
+var properties = require("../../config/properties");
 
-const GOOGLE_MAILER_CLIENT_ID = process.env.GOOGLE_MAILER_CLIENT_ID;
-const GOOGLE_MAILER_CLIENT_SECRET = process.env.TZ_MAILER_CLIENT_SECRET;
-const GOOGLE_MAILER_REFRESH_TOKEN = process.env.GOOGLE_MAILER_REFRESH_TOKEN;
-const ADMIN_EMAIL_ADDRESS = process.env.ADMIN_EMAIL_ADDRESS;
+const GOOGLE_MAILER_CLIENT_ID =
+  process.env.GOOGLE_MAILER_CLIENT_ID || properties.GOOGLE_MAILER_CLIENT_ID;
+const GOOGLE_MAILER_CLIENT_SECRET =
+  process.env.GOOGLE_MAILER_CLIENT_SECRET ||
+  properties.GOOGLE_MAILER_CLIENT_SECRET;
+const GOOGLE_MAILER_REFRESH_TOKEN =
+  process.env.GOOGLE_MAILER_REFRESH_TOKEN ||
+  properties.GOOGLE_MAILER_REFRESH_TOKEN;
+const ADMIN_EMAIL_ADDRESS =
+  process.env.ADMIN_EMAIL_ADDRESS || properties.ADMIN_EMAIL_ADDRESS;
 
 exports.login = async (req, res) => {
   const { taiKhoan, matKhau } = req.body;
@@ -303,12 +310,16 @@ exports.recoverPassword = async (req, res) => {
     });
 
     const myAccessTokenObject = await myOAuth2Client.getAccessToken();
+    // console.log(myAccessTokenObject);
+
     const myAccessToken = myAccessTokenObject?.token;
+    // console.log("Đến đây vẫn được");
 
     const { taiKhoan } = req.query;
+    // console.log(taiKhoan);
 
     const user = await User.findOne({ taiKhoan });
-
+    console.log(user);
     if (!user) {
       return res.status(404).send("User không tồn tại");
     }
