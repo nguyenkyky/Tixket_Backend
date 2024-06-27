@@ -192,17 +192,6 @@ exports.update = async (req, res) => {
       }
     }
 
-    if (
-      newEmail.length === 0 ||
-      newTaiKhoan.length === 0 ||
-      hoTen.length === 0 ||
-      soDT.length === 0
-    ) {
-      return res
-        .status(400)
-        .json({ message: "Vui lòng điền đầy đủ thông tin" });
-    }
-
     if (newEmail !== email) {
       const existingUser = await User.findOne({ email: newEmail });
       if (existingUser) {
@@ -218,11 +207,9 @@ exports.update = async (req, res) => {
     user.taiKhoan = newTaiKhoan;
 
     // Save the updated user
-    const updatedUser = await user.save();
+    await user.save();
 
-    res
-      .status(200)
-      .json({ message: "User updated successfully", user: updatedUser });
+    res.status(200).json({ message: "User updated successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
