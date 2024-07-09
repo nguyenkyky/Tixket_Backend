@@ -100,8 +100,6 @@ exports.register = async (req, res) => {
       uid: username,
       hoTen: hoTen,
       matKhau: matKhau,
-      email: "",
-      soDT: "",
       avatar:
         "https://cdn-media.sforum.vn/storage/app/media/wp-content/uploads/2024/02/avatar-anh-meo-cute-1.jpg",
       maLoaiNguoiDung: "KhachHang",
@@ -306,7 +304,7 @@ exports.recoverPassword = async (req, res) => {
     // console.log(taiKhoan);
 
     const user = await User.findOne({ taiKhoan });
-    console.log(user);
+    // console.log(user);
     if (!user) {
       return res.status(404).send("User không tồn tại");
     }
@@ -332,6 +330,10 @@ exports.recoverPassword = async (req, res) => {
         accessToken: myAccessToken,
       },
     });
+
+    if(!user.email) {
+      return res.status(403).json({message:"Tài khoản chưa đăng ký email, không thể lấy lại"});
+    }
 
     const mailOptions = {
       to: user.email,
