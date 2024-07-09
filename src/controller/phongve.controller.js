@@ -84,7 +84,7 @@ exports.datVe = async (req, res) => {
         update: {
           $set: {
             "danhSachGhe.$.daDat": true,
-            "danhSachGhe.$.taiKhoanNguoiDat": user.hoTen, // Cập nhật hoTen vào taiKhoanNguoiDat
+            "danhSachGhe.$.taiKhoanNguoiDat": user.taiKhoan, // Cập nhật hoTen vào taiKhoanNguoiDat
           },
         },
       },
